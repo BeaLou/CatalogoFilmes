@@ -1,10 +1,26 @@
 import Menu from '../../components/menu'
 import Cabecalho from '../../components/cabecalho'
-
+import { listarTodosFilmes, buscarFilmesPorNome } from '../../api/filmeApi'
 import './index.scss'
-
+import { useState, useEffect } from 'react'
 
 export default function Index() {
+    const [filmes, setFilmes] = useState([]);
+    const [filtro, setFiltro] = useState('');
+
+    async function filtrar() {
+        const resp = await buscarFilmesPorNome(filtro);
+        setFilmes(resp);
+    }
+    async function carregarTodosFilmes() {
+        const resp = await listarTodosFilmes();
+        setFilmes(resp);
+    }
+
+    useEffect(() => {
+        carregarTodosFilmes();
+    }, [])
+
     return ( <
         main className = 'page page-consultar' >
         <
@@ -21,12 +37,15 @@ export default function Index() {
         div className = 'caixa-busca' >
         <
         input type = "text"
-        placeholder = 'Buscar filmes por nome' / >
-        <
+        placeholder = 'Buscar filmes por nome'
+        value = { filtro }
+        onChange = { e => setFiltro(e.target.value) }
+        /> <
         img src = '/assets/images/icon-buscar.svg'
-        alt = 'buscar' / >
-        <
-        /div>
+        alt = 'buscar'
+        onClick = { filtrar }
+        /> < /
+        div >
 
         <
         table >
@@ -40,104 +59,36 @@ export default function Index() {
         th > AVALIAÇÃO < /th> <
         th > LANÇAMENTO < /th> <
         th > DISPONÍVEL < /th> <
-        th > < /th> <
-        /tr> <
+        th > < /th> < /
+        tr > <
         /thead> <
-        tbody >
-        <
-        tr >
-        <
-        td > #01</td>
-                                <td>Harry Potter e a Pedra Filosofal</td>
-                                <td>8,0</td>
-                                <td>04/01/05</td>
-                                <td>Sim</td>
-                                <td>
-                                    <img src= '/assets/images/icon-editar.svg'
-        alt = 'editar' / >
-        &
-        nbsp; & nbsp; & nbsp; & nbsp; & nbsp; <
-        img src = '/assets/images/icon-remover.svg'
-        alt = 'remover' / >
-        <
-        /td> <
-        /tr> <
-        tr >
-        <
-        td > #01</td>
-                                <td>Harry Potter e a Pedra Filosofal</td>
-                                <td>8,0</td>
-                                <td>04/01/05</td>
-                                <td>Sim</td>
-                                <td>
-                                    <img src= '/assets/images/icon-editar.svg'
-        alt = 'editar' / >
-        &
-        nbsp; & nbsp; & nbsp; & nbsp; & nbsp; <
-        img src = '/assets/images/icon-remover.svg'
-        alt = 'remover' / >
-        <
-        /td> <
-        /tr> <
-        tr >
-        <
-        td > #01</td>
-                                <td>Harry Potter e a Pedra Filosofal</td>
-                                <td>8,0</td>
-                                <td>04/01/05</td>
-                                <td>Sim</td>
-                                <td>
-                                    <img src= '/assets/images/icon-editar.svg'
-        alt = 'editar' / >
-        &
-        nbsp; & nbsp; & nbsp; & nbsp; & nbsp; <
-        img src = '/assets/images/icon-remover.svg'
-        alt = 'remover' / >
-        <
-        /td> <
-        /tr> <
-        tr >
-        <
-        td > #01</td>
-                                <td>Harry Potter e a Pedra Filosofal</td>
-                                <td>8,0</td>
-                                <td>04/01/05</td>
-                                <td>Sim</td>
-                                <td>
-                                    <img src= '/assets/images/icon-editar.svg'
-        alt = 'editar' / >
-        &
-        nbsp; & nbsp; & nbsp; & nbsp; & nbsp; <
-        img src = '/assets/images/icon-remover.svg'
-        alt = 'remover' / >
-        <
-        /td> <
-        /tr> <
-        tr >
-        <
-        td > #01</td>
-                                <td>Harry Potter e a Pedra Filosofal</td>
-                                <td>8,0</td>
-                                <td>04/01/05</td>
-                                <td>Sim</td>
-                                <td>
-                                    <img src= '/assets/images/icon-editar.svg'
-        alt = 'editar' / >
-        &
-        nbsp; & nbsp; & nbsp; & nbsp; & nbsp; <
-        img src = '/assets/images/icon-remover.svg'
-        alt = 'remover' / >
-        <
-        /td> <
-        /tr>
+        tbody > {
+            filmes.map(item =>
+                <
+                tr >
+                <
+                td > #{ item.id } < /td> <
+                td > { item.nome } < /td> <
+                td > { item.avaliacao } < /td> <
+                td > { item.lancamento.substr(0, 10) } < /td> <
+                td > { item.disponivel ? 'sim' : 'não' } < /td> <
+                td >
+                <
+                img src = '/assets/images/icon-editar.svg'
+                alt = 'editar' / > & nbsp; & nbsp; & nbsp; & nbsp; & nbsp; <
+                img src = '/assets/images/icon-remover.svg'
+                alt = 'remover' / >
+                <
+                /td> < /
+                tr >
+            )
+        } <
+        /tbody> < /
+        table >
 
         <
-        /tbody> <
-        /table>
-
-        <
-        /div> <
-        /div> <
+        /div> < /
+        div > <
         /main>
     )
 }
