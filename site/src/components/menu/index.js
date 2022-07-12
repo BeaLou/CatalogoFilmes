@@ -1,8 +1,9 @@
 import storage from 'local-storage';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
+import { useState } from 'react';
 import './index.scss'
 
-export default function Index() {
+export default function Index(props) {
     const navigate = useNavigate();
 
     function sairClick() {
@@ -10,6 +11,15 @@ export default function Index() {
         navigate('/');
 
     }
+
+    function verificarMenuSelecionado(menu) {
+        if (menu === props.selecionado)
+            return 'selecionado'
+        else
+            return '';
+
+    }
+
     return ( <
         nav className = "comp-menu" >
         <
@@ -26,40 +36,44 @@ export default function Index() {
         <
         div className = 'menu-items' >
         <
-        div >
+        Link to = '/admin'
+        className = { verificarMenuSelecionado('home') } >
         <
         img src = "/assets/images/icon-home.svg"
         alt = "home" / >
         <
         div > Home < /div> <
-        /div> <
-        div >
+        /Link> <
+        Link to = '/admin/cadastrar'
+        className = { verificarMenuSelecionado('cadastrar') } >
         <
         img src = "/assets/images/icon-cadastrar.svg"
         alt = "cadastrar" / >
         <
         div > Cadastrar < /div> <
-        /div> <
-        div >
+        /Link> <
+        Link to = '/admin/consultar'
+        className = { verificarMenuSelecionado('consultar') } >
         <
         img src = "/assets/images/icon-consultar.svg"
         alt = "consultar" / >
         <
         div > Consultar < /div> <
-        /div> <
+        /Link> <
         /div> <
         /div>
 
         <
         div className = 'menu-items' >
         <
-        div onClick = { sairClick } >
+        a onClick = { sairClick }
+        href = "#" >
         <
         img src = "/assets/images/icon-sair.svg"
         alt = "consultar" / >
         <
         div > Sair < /div> <
-        /div> <
+        /a> <
         /div> <
         /nav>
     )
