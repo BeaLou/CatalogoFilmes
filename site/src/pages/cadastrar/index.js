@@ -3,7 +3,7 @@ import Cabecalho from '../../components/cabecalho'
 import { useState } from 'react'
 import './index.scss'
 import storage from 'local-storage'
-import { cadastrarFilme, enviarImagemFilme } from '../../api/filmeApi'
+import { cadastrarFilme, enviarImagemFilme, alterarFilme } from '../../api/filmeApi'
 
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -15,6 +15,8 @@ export default function Index() {
     const [disponivel, setDisponivel] = useState(false)
     const [sinopse, setSinopse] = useState('')
     const [imagem, setImagem] = useState()
+    const [id, setId] = useState(0)
+
 
 
     async function salvarClick() {
@@ -23,10 +25,22 @@ export default function Index() {
                 throw new Error('Escolha a capa do filme');
 
             const usuario = storage('usuario-logado').id;
-            const novoFilme = await cadastrarFilme(nome, avaliacao, lancamento, disponivel, sinopse, usuario);
-            await enviarImagemFilme(novoFilme.id, imagem);
 
-            toast('Filme cadastrado com sucesso');
+            let idFilme = 0;
+
+            if (id === 0) {
+                const novoFilme = await cadastrarFilme(nome, avaliacao, lancamento, disponivel, sinopse, usuario);
+                await enviarImagemFilme(novoFilme.id, imagem);
+                setId(novoFilme.id);
+                toast('Filme cadastrado com sucesso');
+
+            } else {
+                await alterarFilme(id, nome, avaliacao, lancamento, disponivel, sinopse, usuario);
+                await enviarImagemFilme(id, imagem);
+                toast('Filme alterado com sucesso');
+
+            }
+
         } catch (err) {
             if (err.response)
                 toast.error(err.response.data.erro);
@@ -44,6 +58,17 @@ export default function Index() {
         return URL.createObjectURL(imagem);
     }
 
+    function novoClick() {
+        setId(0);
+        setNome('');
+        setAvaliacao('');
+        setSinopse('');
+        setLancamento();
+        setDisponivel(false);
+        setImagem();
+
+
+    }
 
     return ( <
         main className = 'page page-cadastrar' >
@@ -61,7 +86,7 @@ export default function Index() {
         <
         h1 className = 'titulo' >
         <
-        span > < /span>Cadastrar Novo Filme  < /
+        span > & nbsp; < /span>Cadastrar Novo Filme  < /
         h1 > <
         div className = 'form-colums' >
         <
@@ -150,14 +175,17 @@ export default function Index() {
         label > < /label> <
         div className = 'btnSalvar' >
         <
-        button onClick = { salvarClick } > SALVAR < /button>     < /
-        div > <
+        button onClick = { salvarClick } > { id === 0 ? 'SALVAR' : 'ALTERAR' } < /button>  &nbsp; &nbsp; <
+        button onClick = { novoClick } > NOVO < /button>    
+
+        <
         /div> < /
         div > <
         /div> < /
-        section > <
-        /div> < /
         div > <
-        /main>
+        /section> < /
+        div > <
+        /div> < /
+        main >
     )
 }
