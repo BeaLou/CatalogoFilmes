@@ -1,11 +1,25 @@
 import Menu from '../../components/menu'
 import Cabecalho from '../../components/cabecalho'
 import Detalhe from '../../components/detalhe'
-
+import { useParams } from 'react-router-dom'
 import './index.scss'
-
+import { useEffect, useState } from 'react'
+import { buscarPorId } from '../../api/filmeApi'
 
 export default function Index() {
+    const [filme, setFilme] = useState({});
+
+    const {idParam} = useParams();
+
+    useEffect(() => {
+     carregarFilme();
+    }, []);
+    
+    async function carregarFilme(){
+        const resposta = await buscarPorId(idParam);
+        setFilme(resposta);
+    }
+
     return (
         <main className='page page-detalhe'>
             <Menu />
@@ -13,7 +27,7 @@ export default function Index() {
                 <Cabecalho />
                 
                 <div className='conteudo'>
-                    <Detalhe />
+                    <Detalhe filme={filme} />
                 </div>
             </div>
         </main>
