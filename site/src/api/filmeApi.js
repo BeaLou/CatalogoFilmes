@@ -49,3 +49,17 @@ export async function buscarFilmesPorNome(nome) {
     const resposta = await api.get(`/filme/busca?nome=${nome}`);
     return resposta.data;
 }
+
+export async function removerFilme(id) {
+    const resposta = await api.delete(`/filme/${id}`);
+    return resposta.status;
+}
+
+export async function buscarPorId(id){
+    const resposta = await api.get(`/filme/${id}`);
+    return resposta.data;
+}
+
+export function buscarImagem(imagem){
+    return `${api.getUri()}/${imagem}`;
+}

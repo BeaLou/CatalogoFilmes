@@ -5,15 +5,11 @@ import { ToastContainer } from 'react-toastify';
 import './index.scss';
 import 'react-toastify/dist/ReactToastify.css';
 import Routes from './routes';
+import 'react-confirm-alert/src/react-confirm-alert.css'
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
-root.render( <
-    React.StrictMode >
-    <
-    ToastContainer / >
-
-    <
-    Routes / >
-    <
-    /React.StrictMode>
+root.render( <React.StrictMode>
+    <ToastContainer/>
+    <Routes />
+    </React.StrictMode>
 );

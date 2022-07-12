@@ -1,14 +1,16 @@
 import Menu from "../../components/menu";
 import Cabecalho from "../../components/cabecalho";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import "./index.scss";
 import storage from "local-storage";
 import {
   cadastrarFilme,
   enviarImagemFilme,
   alterarFilme,
+  buscarPorId,
+  buscarImagem
 } from "../../api/filmeApi";
-
+import { useParams } from "react-router-dom";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
@@ -21,6 +23,27 @@ export default function Index() {
   const [imagem, setImagem] = useState();
   const [id, setId] = useState(0);
 
+
+  const {idParam} = useParams();
+
+  useEffect(()=>{
+    if(idParam){
+      carregarFilme();
+    }
+  },[])
+
+  async function carregarFilme(){
+    const resposta = await buscarPorId(idParam);
+    setNome(resposta.nome);
+    setSinopse(resposta.sinopse);
+    setAvaliacao(resposta.avaliacao);
+    setDisponivel(resposta.disponivel);
+    setLancamento(resposta.lancamento.substr(0,10));
+    setId(resposta.id);
+    setImagem(resposta.imagem);
+  }
+
+
   async function salvarClick() {
     try {
       if (!imagem) throw new Error("Escolha a capa do filme");
@@ -31,27 +54,21 @@ export default function Index() {
 
       if (id === 0) {
         const novoFilme = await cadastrarFilme(
-          nome,
-          avaliacao,
-          lancamento,
-          disponivel,
-          sinopse,
-          usuario
+          nome,          avaliacao,          lancamento,          disponivel,          sinopse,          usuario
         );
         await enviarImagemFilme(novoFilme.id, imagem);
         setId(novoFilme.id);
         toast("Filme cadastrado com sucesso");
-      } else {
+
+      } 
+      else {
         await alterarFilme(
-          id,
-          nome,
-          avaliacao,
-          lancamento,
-          disponivel,
-          sinopse,
-          usuario
+          id,          nome,          avaliacao,          lancamento,          disponivel,          sinopse,          usuario
         );
-        await enviarImagemFilme(id, imagem);
+
+        if(typeof(imagem) == 'object')
+          await enviarImagemFilme(id, imagem);
+          
         toast("Filme alterado com sucesso");
       }
     } catch (err) {
@@ -65,8 +82,14 @@ export default function Index() {
   }
 
   function mostrarImagem() {
-    return URL.createObjectURL(imagem);
+    if(typeof(imagem) == 'object'){
+      return URL.createObjectURL(imagem);
+    }
+    else{
+      return buscarImagem(imagem);
+    }
   }
+
 
   function novoClick() {
     setId(0);
@@ -86,7 +109,7 @@ export default function Index() {
         <div className="conteudo">
           <section>
             <h1 className="titulo">
-              <span> & nbsp; </span>Cadastrar Novo Filme
+              <span>&nbsp; </span>Cadastrar Novo Filme
             </h1>
             <div className="form-colums">
               <div>
