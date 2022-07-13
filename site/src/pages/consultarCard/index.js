@@ -7,7 +7,7 @@ import {confirmAlert } from 'react-confirm-alert';
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 import './index.scss'
-
+import FilmeCard from '../../components/filmeCard'
 
 export default function Index() {
     const [filmes, setFilmes] = useState([]);
@@ -82,29 +82,12 @@ export default function Index() {
                     <div className='card-container'>
 
                     {filmes.map(item =>
-                        <div className='comp-card'>
-                        <div className='card' key={item.id} onClick={() => abrirDetalhes(item.id)}>
-                            <div className='acoes'>
-                                <img src='/assets/images/icon-editar.svg' alt='editar' onClick={e =>{ 
-                      e.stopPropagation();
-                      editarFilme(item.id)
-                    }} />                                
-                                <img src='/assets/images/icon-remover.svg' alt='remover' onClick={e =>{ 
-                      e.stopPropagation();removerFilmeClick(item.id, item.nome)
-                      }}/>                                
-                            </div>
-
-                            <div>
-                                <div className='sigla'>{item.nome.substr(0,1)}</div>
-                                <div className='filme'>{item.nome}</div>
-                                <div className='lancamento'>{item.lancamento}</div>
-                            </div>
-                            <div>
-                                <div className='avaliacao'>Avaliação:{item.avaliacao}</div>
-                                <div className='disponivel'>{item.disponivel ? 'disponivel': 'indisponivel'}</div>
-                            </div>
-                        </div>
-                    </div>
+                        <FilmeCard 
+                        item={item} 
+                        abrirDetalhes={abrirDetalhes} 
+                        editarFilme= {editarFilme} 
+                        removerFilmeClick={removerFilmeClick}
+                        />
                     )};                     
                     </div>
                 </div>
